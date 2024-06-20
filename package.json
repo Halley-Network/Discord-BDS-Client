@@ -1,0 +1,15 @@
+{
+  "name": "discord-bds-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "kaito02020424",
+  "license": "MIT",
+  "dependencies": {
+    "@minecraft/server": "^1.12.0-beta.1.21.0-stable",
+    "@minecraft/server-net": "^1.0.0-beta.1.21.0-stable"
+  }
+}

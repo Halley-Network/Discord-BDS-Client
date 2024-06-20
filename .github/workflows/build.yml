@@ -1,0 +1,31 @@
+name: Build mc-packs
+
+on: 
+  push:
+    branches:
+      - release
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install TypeScript
+        run: npm install -g typescript
+      - name: Build
+        run: npm i && tsc -d  --target es2021 && zip -r discord-bds.mcpack *
+      - name: Get now manifest version
+        id: version
+        run: echo "version=v$(cat manifest.json | jq .header.version[0]).$(cat manifest.json | jq .header.version[1]).$(cat manifest.json | jq .header.version[2])" >> $GITHUB_ENV
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.version }}
+          files: |
+            discord-bds.mcpack
