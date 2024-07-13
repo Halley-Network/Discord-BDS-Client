@@ -5,13 +5,13 @@
         "name": "Discord-BDS",
         "uuid": "ca0d431e-46f1-43fd-80c7-2eff198b44d5",
         "version": [
+            1,
             0,
-            0,
-            1
+            0
         ],
         "min_engine_version": [
             1,
-            19,
+            21,
             0
         ]
     },
