@@ -21,6 +21,13 @@ system.runInterval(async () => {
                 break;
             }
             case "eval": {
+                const result = await runCommand(data.content)
+                const req = new HttpRequest(`${config.botServer}/eval`)
+                req.body = JSON.stringify({
+                    id: data.id,
+                    status: result.status
+                })
+                http.request(req)
                 break;
             }
             case "list": {
