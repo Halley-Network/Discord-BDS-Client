@@ -23,6 +23,7 @@ system.runInterval(async () => {
             case "eval": {
                 const result = await runCommand(data.content)
                 const req = new HttpRequest(`${config.botServer}/eval`)
+                req.method = HttpRequestMethod.Post
                 req.body = JSON.stringify({
                     id: data.id,
                     status: result.status
@@ -31,6 +32,15 @@ system.runInterval(async () => {
                 break;
             }
             case "list": {
+                const players = world.getAllPlayers().map(player => player.name)
+                const req = new HttpRequest(`${config.botServer}/list`)
+                req.method = HttpRequestMethod.Post
+                req.body = JSON.stringify({
+                    id: data.id,
+                    players: players,
+                    max: config.maxPlayers
+                })
+                http.request(req)
                 break;
             }
         }
