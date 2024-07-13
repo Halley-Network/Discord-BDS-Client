@@ -46,3 +46,15 @@ system.runInterval(async () => {
         }
     }
 }, config.checkMessagesInterval)
+
+world.afterEvents.chatSend.subscribe((ev) => {
+    const author = ev.sender.name
+    const content = ev.message
+    const req = new HttpRequest(`${config.botServer}/send`)
+    req.method = HttpRequestMethod.Post
+    req.body = JSON.stringify({
+        author,
+        content
+    })
+    http.request(req)
+})
