@@ -58,3 +58,25 @@ world.afterEvents.chatSend.subscribe((ev) => {
     req.addHeader("Content-Type", "application/json")
     http.request(req)
 })
+
+world.afterEvents.playerSpawn.subscribe((ev) => {
+    const player = ev.player
+    const req = new HttpRequest(`${config.botServer}/join`)
+    req.method = HttpRequestMethod.Post
+    req.body = JSON.stringify({
+        player: player.name
+    })
+    req.addHeader("Content-Type", "application/json")
+    http.request(req)
+})
+
+world.afterEvents.playerLeave.subscribe((ev) => {
+    const player = ev.playerName
+    const req = new HttpRequest(`${config.botServer}/leave`)
+    req.method = HttpRequestMethod.Post
+    req.body = JSON.stringify({
+        player: player
+    })
+    req.addHeader("Content-Type", "application/json")
+    http.request(req)
+})
