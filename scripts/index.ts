@@ -1,16 +1,13 @@
 import { HttpRequest, HttpRequestMethod, http } from "@minecraft/server-net";
 import config from "./config";
 import runCommand from "./eval";
-import { MessageQueue } from "./types";
+import type { MessageQueue } from "./types";
 import { system, world } from "@minecraft/server";
 import getTime from "./utils/time";
 let lastTime = getTime(config.timeZone).getTime()
 system.runInterval(async () => {
-    const req = new HttpRequest(`${config.botServer}/messages`)
+    const req = new HttpRequest(`${config.botServer}/messages?since=${lastTime}`)
     req.method = HttpRequestMethod.Get
-    req.body = JSON.stringify({
-        since: lastTime
-    })
     const res = await http.request(req)
     lastTime = getTime(config.timeZone).getTime()
     const dataArray: MessageQueue[] = JSON.parse(res.body)
@@ -28,6 +25,7 @@ system.runInterval(async () => {
                     id: data.id,
                     status: result.status
                 })
+                req.addHeader("Content-Type", "application/json")
                 http.request(req)
                 break;
             }
@@ -40,6 +38,7 @@ system.runInterval(async () => {
                     players: players,
                     max: config.maxPlayers
                 })
+                req.addHeader("Content-Type", "application/json")
                 http.request(req)
                 break;
             }
@@ -56,5 +55,6 @@ world.afterEvents.chatSend.subscribe((ev) => {
         author,
         content
     })
+    req.addHeader("Content-Type", "application/json")
     http.request(req)
 })
