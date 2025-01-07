@@ -1,8 +1,8 @@
-import { world } from "@minecraft/server"
+import { world, DimensionLocation, Dimension, DimensionType } from "@minecraft/server"
 export default async function runCommand(command: string): Promise<{ status: boolean }> {
     try {
-        const result = await world.getDimension("overworld").runCommandAsync(command)
-        if (result.successCount == 0) return { status: false }
+        const result = await runCommand(command)
+        if (result.status == true) return { status: false }
         else return { status: true }
     } catch {
         return { status: false }

@@ -4,35 +4,29 @@
         "description": "Discord-BDS Client root addon.",
         "name": "Discord-BDS",
         "uuid": "ca0d431e-46f1-43fd-80c7-2eff198b44d5",
-        "version": [
-            1,
-            0,
-            0
-        ],
-        "min_engine_version": [
-            1,
-            21,
-            0
-        ]
+        "version": [1,0,0],
+        "min_engine_version": [1,21,0]
     },
     "modules": [
+        {
+            "version": [0,0,1],
+            "type": "data",
+            "uuid": "521d2e59-f730-4d48-aa01-6856415c9eb4",
+            "description": "data module"
+        },
         {
             "description": "Discord-BDS's scripts",
             "type": "script",
             "language": "javascript",
             "uuid": "2bae4638-f2f8-47bc-89d0-4aa45c3c9585",
-            "version": [
-                0,
-                0,
-                1
-            ],
+            "version": [0,0,1],
             "entry": "scripts/index.js"
         }
     ],
     "dependencies": [
         {
             "module_name": "@minecraft/server",
-            "version": "1.18.0-beta"
+            "version": "1.17.0-beta"
         },
         {
             "module_name": "@minecraft/server-net",
