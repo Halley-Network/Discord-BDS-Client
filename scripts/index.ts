@@ -14,6 +14,7 @@ system.runInterval(async () => {
     for (const data of dataArray) {
         switch (data.type) {
             case "message": {
+                console.log(`[${data.author}]: ${data.content}`)
                 world.sendMessage(`[${data.author}]: ${data.content}`)
                 break;
             }
@@ -44,38 +45,22 @@ system.runInterval(async () => {
             }
         }
     }
-//}, config.checkMessagesInterval)
-})
+}, config.checkMessagesInterval)
 
-world.beforeEvents.chatSend.subscribe((ev) => {
+
+world.afterEvents.chatSend.subscribe((ev) => {
     const { sender, message, targets } = ev;
-    ev.cancel = true;
-
-    try {
-        sender.runCommandAsync(`tellraw @a {"rawtext":[{"text": "[${sender.name}] ${ev.message}"}]}`);
-    } catch (err) {
-        sender.runCommandAsync(`say ${err}`);
-    }
-})
-
-
-/*
-world.beforeEvents.chatSend.subscribe((ev) => {
-    ev.sender.runCommand(`say ChatSend`)
-    const author = ev.sender.name
-    const content = ev.message
     const req = new HttpRequest(`${config.botServer}/send`)
     req.method = HttpRequestMethod.Post;
     req.body = JSON.stringify({
-        author,
-        content
+        author: sender.name,
+        content: message
     })
     req.addHeader("Content-Type", "application/json")
     http.request(req)
 })
 
 world.afterEvents.playerSpawn.subscribe((ev) => {
-    console.log(`afterEvents: ${Object.keys(world.afterEvents)}`);
     const player = ev.player
     const req = new HttpRequest(`${config.botServer}/join`)
     req.method = HttpRequestMethod.Post;
@@ -96,4 +81,3 @@ world.afterEvents.playerLeave.subscribe((ev) => {
     req.addHeader("Content-Type", "application/json")
     http.request(req)
 })
-*/
