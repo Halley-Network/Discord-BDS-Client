@@ -9,7 +9,7 @@
   "author": "kaito02020424",
   "license": "MIT",
   "dependencies": {
-    "@minecraft/server": "^1.17.0-beta.1.21.50-stable",
+    "@minecraft/server": "^1.18.0-beta.1.21.61-stable",
     "@minecraft/server-net": "^1.0.0-beta.1.21.60-preview.24"
   }
 }
