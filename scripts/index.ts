@@ -99,3 +99,27 @@ world.afterEvents.playerLeave.subscribe((ev) => {
     req.headers = [new HttpHeader("Content-Type", "application/json")];
     http.request(req);
 });
+
+// --- 10秒ごとに現在の人数をマネージャーに自動報告する処理を追加 ---
+system.runInterval(() => {
+    try {
+        const allPlayers = world.getAllPlayers();
+        const playerCount = allPlayers.length;
+
+        const listReq = new HttpRequest(`${ConnectServer}/list`);
+        listReq.method = HttpRequestMethod.Post;
+        
+        // マネージャー側が期待しているのは「数値」なので、lengthを送る
+        listReq.body = JSON.stringify({
+            players: playerCount 
+        });
+        
+        listReq.headers = [
+            new HttpHeader("Content-Type", "application/json")
+        ];
+
+        http.request(listReq);
+    } catch (e) {
+        // エラー時は無視
+    }
+}, 200); // 200 ticks = 約10秒
