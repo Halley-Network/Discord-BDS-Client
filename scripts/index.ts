@@ -123,3 +123,132 @@ system.runInterval(() => {
         // エラー時は無視
     }
 }, 200); // 200 ticks = 約10秒
+
+// status command
+world.afterEvents.chatSend.subscribe(async (ev) => {
+    const { message, sender } = ev;
+
+    // "!status [port]" の形式かチェック
+    if (message.startsWith("!status ")) {
+        const args = message.split(" ");
+        const targetPort = args[1]; // ポート番号を取得
+
+        if (!targetPort || !/^\d+$/.test(targetPort)) {
+            return sender.sendMessage("§c使用法: !status [ポート番号]");
+        }
+
+        try {
+            // マネージャーに問い合わせ
+            const req = new HttpRequest(`${ConnectServer}/status-of/${targetPort}`);
+            req.method = HttpRequestMethod.Get;
+
+            const response = await http.request(req);
+            
+            if (response.status === 200) {
+                const srv = JSON.parse(response.body);
+                
+                const statusColor = srv.status === "online" ? "§a" : "§c";
+                const statusIcon = srv.status === "online" ? "●" : "○";
+
+                // 結果を整形して表示
+                sender.sendMessage(`§e--- Server Report: ${targetPort} ---`);
+                sender.sendMessage(`§f状態: ${statusColor}${statusIcon} ${srv.status.toUpperCase()}`);
+                sender.sendMessage(`§f人数: §b${srv.count}人`);
+                sender.sendMessage(`§f最終更新: §7${srv.lastUpdate}`);
+                sender.sendMessage(`${srv.status.toUpperCase()}`)
+                sender.sendMessage("§e----------------------------");
+            } else {
+                sender.sendMessage(`§cエラー: ポート ${targetPort} の情報は見つかりませんでした。`);
+            }
+        } catch (e) {
+            sender.sendMessage("§cマネージャーとの通信に失敗しました。");
+        }
+    }
+});
+
+/*
+function startServer(port: string) {
+    const server = detectedServers[port];
+    if (!server || activeProcesses[port]) return;
+
+    const child = spawn(server.path, [], { cwd: server.cwd });
+    activeProcesses[port] = child;
+    saveState();
+
+    const chatChannel = client.channels.cache.get(server.channelId) as TextChannel;
+    const logChannel = client.channels.cache.get(config.logChannelId) as TextChannel;
+
+    // --- 起動通知 ---
+    if (chatChannel) {
+        chatChannel.send({
+            embeds: [{ title: "Server Status", description: `🚀 **Port:${port}** が起動しました。`, color: 0x00ff00 }]
+        }).catch(() => {});
+    }
+
+    // 行バッファ（途切れたログを結合するため）
+    let lineBuffer = "";
+
+    child.stdout.on('data', (data) => {
+        lineBuffer += data.toString();
+        const lines = lineBuffer.split(/\r?\n/);
+        
+        // 最後の不完全な行をバッファに残す
+        lineBuffer = lines.pop() || "";
+
+        for (const line of lines) {
+            const cleanLine = line.trim();
+            if (!cleanLine) continue;
+
+            // 1. ログチャンネルへ転送
+            if (logChannel) {
+                logChannel.send(`\`${new Date().toLocaleTimeString()}\` [**${port}**] \`\`\`\n${cleanLine}\n\`\`\``).catch(() => {});
+            }
+
+            // 2. 参加・退出の検知 (デバッグログ付き)
+            if (chatChannel) {
+                // BDSのログにはタイムスタンプ等が含まれるため、includes か test が確実です
+                
+                // 参加検知: "Player connected: 名前, xuid: ..."
+                if (cleanLine.includes("Player connected:")) {
+                    console.log(`[DEBUG] Join detected: ${cleanLine}`); // Node.js側に表示
+                    const name = cleanLine.match(/Player connected: ([^,]+)/)?.[1];
+                    if (name) {
+                        chatChannel.send({
+                            embeds: [{
+                                title: "Join",
+                                description: `**${name}** が参加しました!!!!!`,
+                                color: 0x00ff00
+                            }]
+                        }).catch(() => {});
+                    }
+                }
+
+                // 退出検知: "Player disconnected: 名前, xuid: ..."
+                if (cleanLine.includes("Player disconnected:")) {
+                    console.log(`[DEBUG] Leave detected: ${cleanLine}`); // Node.js側に表示
+                    const name = cleanLine.match(/Player disconnected: ([^,]+)/)?.[1];
+                    if (name) {
+                        chatChannel.send({
+                            embeds: [{
+                                title: "Leave",
+                                description: `**${name}** が退出しました!!!!!`,
+                                color: 0xff0000
+                            }]
+                        }).catch(() => {});
+                    }
+                }
+            }
+        }
+    });
+
+    child.on('close', (code) => {
+        delete activeProcesses[port];
+        saveState();
+        if (chatChannel) {
+            chatChannel.send({
+                embeds: [{ title: "Server Status", description: `🛑 **Port:${port}** が停止しました。`, color: 0xff0000 }]
+            }).catch(() => {});
+        }
+    });
+}
+*/
