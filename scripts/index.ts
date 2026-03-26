@@ -103,7 +103,7 @@ async function sendDebugPulse() {
         // 人数(players)と名前リスト(names)をJSONに含める
         listReq.body = JSON.stringify({
             players: allPlayers.length,
-            names: allPlayers.map(p => p.name) 
+            names: allPlayers.map(p => p.name)
         });
         
         listReq.headers = [

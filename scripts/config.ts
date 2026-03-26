@@ -1,6 +1,6 @@
 const config = {
     botServer: "http://localhost:9000",
-    server_port: "19132",
+    server_port: "19133",
     /**[tick] */
     checkMessagesInterval: 10,
     timeZone: 9,  //UTC + n hours
